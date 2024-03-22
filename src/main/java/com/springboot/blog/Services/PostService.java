@@ -6,9 +6,18 @@ import com.springboot.blog.payload.postDTO;
 
 public interface PostService {
 	
-	postDTO createPost(postDTO postDTO);
+	public postDTO createPost(postDTO postDTO);
 
 	
 	
-	List<postDTO> getallposts();
+	public List<postDTO> getallposts();
+	
+	public postDTO getPostByID(long id);
+
+
+
+	public postDTO UpdatePost(postDTO postDTO,long id);
+	
+	
+	public void DeletePost(long id);
 }
