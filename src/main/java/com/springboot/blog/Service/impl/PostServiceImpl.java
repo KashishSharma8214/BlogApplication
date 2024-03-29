@@ -1,14 +1,19 @@
 package com.springboot.blog.Service.impl;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.Entity.Post;
 import com.springboot.blog.Services.PostService;
 import com.springboot.blog.exception.ResourceNotFoundExecption;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.payload.postDTO;
 import com.springboot.blog.repository.PostRespositoy;
 
@@ -24,6 +29,8 @@ public class PostServiceImpl implements PostService{
 		this.postRespositoy=postRespositoy;
 	}
 	
+	
+	public PostResponse postResponse;
 	
 	@Override
 	public postDTO createPost(postDTO postDTO) {
@@ -44,11 +51,30 @@ public class PostServiceImpl implements PostService{
 	
 	//Method to get all the posts from the DB 
 	@Override
-	public List<postDTO> getallposts() {
-		List<Post> findAll = postRespositoy.findAll();
-		List<postDTO> collect = findAll.stream().map(post->MapToDTo(post)).collect(Collectors.toList());
+	public PostResponse getallposts(int PageNo, int PageSize,String SortBy) {
 		
-		return collect;
+		
+		// Creating the PageRequest object and Using "Of" static Method 
+		PageRequest pageable =  PageRequest.of(PageNo, PageSize, Sort.by(SortBy));
+		
+		// Using findAll method of Pageable instance 
+		Page<Post> findAll = postRespositoy.findAll(pageable);	
+		
+		// getting the content of Page and store that in a list 
+		List<Post> content = findAll.getContent();
+		
+		List<postDTO> collect = content.stream().map(post->MapToDTo(post)).collect(Collectors.toList());
+		
+		
+		//Creating the Instance of PostResponse Model class and setting the values 
+		PostResponse postResponse = new PostResponse();
+		postResponse.setContent(collect);
+		postResponse.setPageNo(findAll.getNumber());
+		postResponse.setPageSize(findAll.getSize());
+		postResponse.setTotalElements(findAll.getTotalElements());
+		postResponse.setTotalpages(findAll.getTotalPages());
+		postResponse.setLast(findAll.isLast());
+		return postResponse;
 	}
 	
 	

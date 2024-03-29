@@ -2,6 +2,7 @@ package com.springboot.blog.Services;
 
 import java.util.List;
 
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.payload.postDTO;
 
 public interface PostService {
@@ -10,7 +11,7 @@ public interface PostService {
 
 	
 	
-	public List<postDTO> getallposts();
+	public PostResponse getallposts(int PageNo , int PageSize,String SortBy);
 	
 	public postDTO getPostByID(long id);
 

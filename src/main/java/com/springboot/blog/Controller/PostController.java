@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.blog.Services.PostService;
+import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.payload.postDTO;
 
 @RestController
@@ -37,8 +39,12 @@ public class PostController {
 	
 	//Get Api to Get the data from The DB 
 	@GetMapping
-	public List<postDTO> getAllPosts(){
-		List<postDTO> getallposts = postService.getallposts();
+	public PostResponse getAllPosts(
+			@RequestParam(value="PageNo",defaultValue = "0",required =false) int PageNo,
+			@RequestParam(value="PageSize",defaultValue = "10",required =false) int PageSize,
+			@RequestParam(value="SortBy" , defaultValue = "id", required = false) String SortBy
+			){
+		PostResponse getallposts = postService.getallposts(PageNo , PageSize,SortBy);
 		return getallposts;
 	}
 	
