@@ -51,11 +51,15 @@ public class PostServiceImpl implements PostService{
 	
 	//Method to get all the posts from the DB 
 	@Override
-	public PostResponse getallposts(int PageNo, int PageSize,String SortBy) {
+	public PostResponse getallposts(int PageNo, int PageSize,String SortBy,String sortDir) {
 		
+		
+		//Sort by dynamically by using Ternary operater 
+		  Sort sort=sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(SortBy).ascending()
+				  :Sort.by(SortBy).descending();
 		
 		// Creating the PageRequest object and Using "Of" static Method 
-		PageRequest pageable =  PageRequest.of(PageNo, PageSize, Sort.by(SortBy));
+		PageRequest pageable =  PageRequest.of(PageNo, PageSize, sort);
 		
 		// Using findAll method of Pageable instance 
 		Page<Post> findAll = postRespositoy.findAll(pageable);	
