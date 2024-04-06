@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.Entity.Comment;
 import com.springboot.blog.Entity.Post;
 import com.springboot.blog.Services.CommentService;
+import com.springboot.blog.exception.BlogAppException;
 import com.springboot.blog.exception.ResourceNotFoundExecption;
 import com.springboot.blog.payload.CommentDTO;
 import com.springboot.blog.repository.CommentRepository;
@@ -78,6 +80,86 @@ public class CommentServiceImpl implements CommentService {
 		
 		//convert list of comment entities to List of Comment dto's
 		return findByPostId.stream().map(t -> MaptoDTO(t)).collect(Collectors.toList());
+	}
+
+
+	@Override
+	public CommentDTO getCommentByid(long postId, long commentid) {
+		
+		Post post = postRespositoy.findById(postId)
+				.orElseThrow(()-> new ResourceNotFoundExecption("Post", "id", postId));
+		
+		Comment comment = commentRepository.findById(commentid).
+		orElseThrow(()-> new ResourceNotFoundExecption("Comment", "id", commentid));
+		
+		
+		
+		if(!comment.getPost().getId().equals(post.getId())) {
+			throw new BlogAppException(HttpStatus.BAD_REQUEST, "Comment does not belong to the Post");
+		}
+		
+		
+		return MaptoDTO(comment);
+	}
+
+
+	
+	
+	@Override
+	public CommentDTO UpdateCommentByid(CommentDTO commentDTO ,Long postId , Long commentid) {
+		
+		
+		// reterive the post by id 
+		Post post = postRespositoy.findById(postId).
+				orElseThrow(()-> new ResourceNotFoundExecption("Post", "id ", postId));
+		
+		
+		
+		
+		Comment comment = commentRepository.findById(commentid).
+				orElseThrow(()-> new ResourceNotFoundExecption("Comment", "id", commentid));
+		
+		
+		if(!comment.getPost().getId().equals(post.getId())) {
+			throw new BlogAppException(HttpStatus.BAD_REQUEST, "Comment does not belong to the Post");
+		}
+			
+		
+		
+		comment.setBody(commentDTO.getBody());
+		comment.setEmail(commentDTO.getEmail());
+		comment.setName(commentDTO.getName());
+
+		Comment save = commentRepository.save(comment);
+		
+		
+		return MaptoDTO(save);
+	
+		
+	}
+
+
+	@Override
+	public String DeleteCommentById( Long postId, Long commentid) {
+		
+		// reterive the post by id 
+				Post post = postRespositoy.findById(postId).
+						orElseThrow(()-> new ResourceNotFoundExecption("Post", "id ", postId));
+				
+				
+				
+				
+				Comment comment = commentRepository.findById(commentid).
+						orElseThrow(()-> new ResourceNotFoundExecption("Comment", "id", commentid));
+				
+				
+				if(!comment.getPost().getId().equals(post.getId())) {
+					throw new BlogAppException(HttpStatus.BAD_REQUEST, "Comment does not belong to the Post");
+				}
+		
+				commentRepository.deleteById(commentid);
+				
+		return "Comment Deleted Successfully With id :" +commentid;
 	}
 
 
