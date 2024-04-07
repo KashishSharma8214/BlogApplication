@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,10 +24,12 @@ public class PostServiceImpl implements PostService{
 
 	
 	private PostRespositoy postRespositoy;
+	
+	private ModelMapper mapper;
 
-
-	public PostServiceImpl(PostRespositoy postRespositoy) {
+	public PostServiceImpl(PostRespositoy postRespositoy,ModelMapper mapper) {
 		this.postRespositoy=postRespositoy;
+		this.mapper= mapper;
 	}
 	
 	
@@ -84,11 +87,14 @@ public class PostServiceImpl implements PostService{
 	
 	// Convert DTO to Entity 
 	private Post MaptoEntity(postDTO postDTO) {
-		Post post = new Post();
-		post.setId(postDTO.getId());
-		post.setTitle(postDTO.getTitle());
-		post.setDescription(postDTO.getDescription());
-		post.setContent(postDTO.getContent());
+		
+		Post post = mapper.map(postDTO, Post.class);
+		
+//		Post post = new Post();
+//		post.setId(postDTO.getId());
+//		post.setTitle(postDTO.getTitle());
+//		post.setDescription(postDTO.getDescription());
+//		post.setContent(postDTO.getContent());
 		return post;
 	}
 	
@@ -98,11 +104,13 @@ public class PostServiceImpl implements PostService{
 	
 	private postDTO MapToDTo(Post post) {
 		
-		postDTO dto = new postDTO();
-		dto.setId(post.getId());
-		dto.setTitle(post.getTitle());
-		dto.setDescription(post.getDescription());
-		dto.setContent(post.getContent());
+		postDTO dto = mapper.map(post, postDTO.class);
+		
+//		postDTO dto = new postDTO();
+//		dto.setId(post.getId());
+//		dto.setTitle(post.getTitle());
+//		dto.setDescription(post.getDescription());
+//		dto.setContent(post.getContent());
 		
 		return dto;
 	}
