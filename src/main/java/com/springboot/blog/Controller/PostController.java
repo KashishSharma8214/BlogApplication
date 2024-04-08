@@ -21,6 +21,8 @@ import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.payload.postDTO;
 import com.springboot.blog.utils.AppConstants;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value="/api/posts")
 public class PostController {
@@ -34,7 +36,7 @@ public class PostController {
 
 	// Post Api to Post the data to DB 
 	@PostMapping
-	public ResponseEntity<postDTO> createPost(@RequestBody postDTO dto){
+	public ResponseEntity<postDTO> createPost(@Valid @RequestBody postDTO dto){
 		return new ResponseEntity<>(postService.createPost(dto), HttpStatus.CREATED);
 	}
 	
@@ -59,9 +61,9 @@ public class PostController {
 	
 	
 	//Update the Existing post rest api By id 
-	
+	// @valid enable the validater to the Update API 
 	@PutMapping("/{id}")
-	public ResponseEntity<postDTO> UpdatePost(@RequestBody postDTO dto , @PathVariable(name="id")long id ){
+	public ResponseEntity<postDTO> UpdatePost(@Valid  @RequestBody postDTO dto , @PathVariable(name="id")long id ){
 		
 		
 		

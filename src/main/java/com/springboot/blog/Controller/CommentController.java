@@ -18,6 +18,8 @@ import com.springboot.blog.Service.impl.CommentServiceImpl;
 import com.springboot.blog.exception.ResourceNotFoundExecption;
 import com.springboot.blog.payload.CommentDTO;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/")
 public class CommentController {
@@ -31,8 +33,8 @@ public class CommentController {
 	}
 
 	@PostMapping("/posts/{postid}/comments")
-	public ResponseEntity<CommentDTO> createComment(@PathVariable(value="postid")long postid  , 
-			@RequestBody CommentDTO commentDTO){
+	public ResponseEntity<CommentDTO> createComment( @PathVariable(value="postid")long postid  , 
+		@Valid	@RequestBody CommentDTO commentDTO){
 		
 		
 				return new ResponseEntity<CommentDTO>(commentServiceImpl.
@@ -64,7 +66,7 @@ public class CommentController {
 	}
 	
 	@PutMapping("/posts/{postid}/comments/{commentid}")
-	public ResponseEntity<CommentDTO> UpdateCommentByid(@RequestBody CommentDTO commentDTO , @PathVariable(value="postid")  Long postid, 
+	public ResponseEntity<CommentDTO> UpdateCommentByid(@Valid  @RequestBody CommentDTO commentDTO , @PathVariable(value="postid")  Long postid, 
 			@PathVariable(value="commentid")Long commentid){
 		
 	
